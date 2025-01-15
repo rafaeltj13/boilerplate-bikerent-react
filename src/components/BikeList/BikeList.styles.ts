@@ -18,10 +18,18 @@ export const QuantityContainer = styled(Box)<BoxProps>(({ theme }) => ({
 
 export const ListContainer = styled(Box)<BoxProps>(({ theme }) => ({
   display: 'grid',
-  gridTemplateColumns: '1fr 1fr 1fr',
+  gridTemplateColumns: '1fr',
   gap: 25,
 
-  [theme.breakpoints.down('md')]: {
-    gridTemplateColumns: '1fr',
+  [theme.breakpoints.up('md')]: {
+    gridTemplateColumns: '1fr 1fr',
+  },
+
+  [theme.breakpoints.up('xl')]: {
+    gridTemplateColumns: '1fr 1fr 1fr',
+  },
+
+  '@media (min-width: 1850px)': {
+    gridTemplateColumns: '1fr 1fr 1fr 1fr',
   },
 }))

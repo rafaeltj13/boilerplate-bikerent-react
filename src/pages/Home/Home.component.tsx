@@ -1,23 +1,32 @@
 import Header from 'components/Header'
 import BikeList from 'components/BikeList'
 import Bike from 'models/Bike'
-import { Content } from './Home.styles'
+import { Content, LoadingContainer } from './Home.styles'
 import ConfigErrorMessage from 'components/ConfigErrorMessage'
+import { Skeleton } from '@mui/material'
 
 interface HomeProps {
   bikes: Bike[]
   appIsNotConfigured: boolean
+  isLoading?: boolean
 }
 
-const Home = ({ bikes, appIsNotConfigured }: HomeProps) => {
+const Home = ({ bikes, appIsNotConfigured, isLoading = false }: HomeProps) => {
   return (
     <div data-testid='home-page'>
       <Header />
-
-      <Content>
-        <BikeList bikes={bikes} />
-        {appIsNotConfigured && <ConfigErrorMessage />}
-      </Content>
+      {isLoading ? (
+        <LoadingContainer>
+          {Array.from({ length: 10 }).map((_, index) => (
+            <Skeleton key={index} width={400} height={320} variant='rounded' animation='wave' />
+          ))}
+        </LoadingContainer>
+      ) : (
+        <Content>
+          <BikeList bikes={bikes} />
+          {appIsNotConfigured && <ConfigErrorMessage />}
+        </Content>
+      )}
     </div>
   )
 }

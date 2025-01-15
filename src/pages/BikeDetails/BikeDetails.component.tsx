@@ -19,6 +19,7 @@ import {
   OverviewContainer,
   PriceRow,
 } from './BikeDetails.styles'
+import BikeRentCalendar from 'components/BikeRentCalendar'
 
 interface BikeDetailsProps {
   bike?: Bike
@@ -111,6 +112,8 @@ const BikeDetails = ({ bike }: BikeDetailsProps) => {
         </DetailsContainer>
 
         <OverviewContainer variant='outlined' data-testid='bike-overview-container'>
+          <BikeRentCalendar />
+
           <Typography variant='h2' fontSize={16} marginBottom={1.25}>
             Booking Overview
           </Typography>
