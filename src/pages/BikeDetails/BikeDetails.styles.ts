@@ -74,7 +74,7 @@ export const InfoIcon = styled(InfoOutlined)(({ theme }) => ({
 
 export const OverviewContainer = styled(Card)<CardProps>(({ theme }) => ({
   borderColor: theme.palette.grey[500],
-  padding: 34,
+  padding: '34px 12px',
   maxHeight: 774,
 }))
 

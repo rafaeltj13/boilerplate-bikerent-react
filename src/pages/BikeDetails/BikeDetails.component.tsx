@@ -20,17 +20,67 @@ import {
   PriceRow,
 } from './BikeDetails.styles'
 import BikeRentCalendar from 'components/BikeRentCalendar'
+import { DateRange } from 'react-day-picker'
+import { useEffect, useState } from 'react'
+import dayjs from 'dayjs'
+import { BOILERPLATE_USER_ID } from 'config'
+import apiClient from 'services/api'
 
 interface BikeDetailsProps {
   bike?: Bike
+  postBikeRental?: ({ dateFrom, dateTo }: { dateFrom: string; dateTo: string }) => void
 }
 
-const BikeDetails = ({ bike }: BikeDetailsProps) => {
+const BikeDetails = ({ bike, postBikeRental }: BikeDetailsProps) => {
   const rateByDay = bike?.rate || 0
   const rateByWeek = rateByDay * 7
 
-  const servicesFee = getServicesFee(rateByDay)
-  const total = rateByDay + servicesFee
+  const [subtotal, setSubtotal] = useState<number>(rateByDay)
+  const [servicesFee, setServicesFee] = useState<number>(getServicesFee(rateByDay) || 0)
+  const [total, setTotal] = useState<number>(rateByDay + servicesFee)
+
+  const [dateFrom, setDateFrom] = useState<string>('')
+  const [dateTo, setDateTo] = useState<string>('')
+
+  const [error, setError] = useState<string>('')
+
+  const onSelectRange = async (dateRange?: DateRange) => {
+    if (dateRange) {
+      setDateFrom(dayjs(dateRange.from).format('YYYY-MM-DD'))
+      setDateTo(dayjs(dateRange.to).format('YYYY-MM-DD'))
+    } else {
+      setDateFrom('')
+      setDateTo('')
+    }
+  }
+
+  const checkRentAmount = async () => {
+    try {
+      const { data }: { data: { rentAmount: number; fee: number; totalAmount: number } } =
+        await apiClient.post('/bikes/amount', {
+          bikeId: bike?.id,
+          userId: parseInt(BOILERPLATE_USER_ID),
+          dateFrom,
+          dateTo,
+        })
+
+      if (data.fee) setServicesFee(data.fee)
+      if (data.rentAmount) setSubtotal(data.rentAmount)
+      if (data.totalAmount) setTotal(data.totalAmount)
+
+      setError('')
+    } catch {
+      setError('This date period is not available')
+    }
+  }
+
+  const onSubmit = () => {
+    postBikeRental?.({ dateFrom, dateTo })
+  }
+
+  useEffect(() => {
+    if (dateFrom && dateTo) checkRentAmount()
+  }, [dateFrom, dateTo])
 
   return (
     <div data-testid='bike-details-page'>
@@ -112,8 +162,7 @@ const BikeDetails = ({ bike }: BikeDetailsProps) => {
         </DetailsContainer>
 
         <OverviewContainer variant='outlined' data-testid='bike-overview-container'>
-          <BikeRentCalendar />
-
+          <BikeRentCalendar onSelectRange={onSelectRange} />
           <Typography variant='h2' fontSize={16} marginBottom={1.25}>
             Booking Overview
           </Typography>
@@ -126,7 +175,7 @@ const BikeDetails = ({ bike }: BikeDetailsProps) => {
               <InfoIcon fontSize='small' />
             </Box>
 
-            <Typography>{rateByDay} €</Typography>
+            <Typography>{subtotal.toFixed(2)} €</Typography>
           </PriceRow>
 
           <PriceRow marginTop={1.5} data-testid='bike-overview-single-price'>
@@ -135,7 +184,7 @@ const BikeDetails = ({ bike }: BikeDetailsProps) => {
               <InfoIcon fontSize='small' />
             </Box>
 
-            <Typography>{servicesFee} €</Typography>
+            <Typography>{servicesFee.toFixed(2)} €</Typography>
           </PriceRow>
 
           <PriceRow marginTop={1.75} data-testid='bike-overview-total'>
@@ -143,7 +192,7 @@ const BikeDetails = ({ bike }: BikeDetailsProps) => {
               Total
             </Typography>
             <Typography variant='h2' fontSize={24} letterSpacing={1}>
-              {total} €
+              {total.toFixed(2)} €
             </Typography>
           </PriceRow>
 
@@ -152,8 +201,10 @@ const BikeDetails = ({ bike }: BikeDetailsProps) => {
             disableElevation
             variant='contained'
             data-testid='bike-booking-button'
+            onClick={onSubmit}
+            disabled={!!error || !dateFrom}
           >
-            Add to booking
+            {error ? error : !dateFrom && !dateTo ? 'Select date and time' : 'Add to booking'}
           </BookingButton>
         </OverviewContainer>
       </Content>

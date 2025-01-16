@@ -11,11 +11,9 @@ const HomeContainer = () => {
   useEffect(() => {
     const getAllBikes = async () => {
       setIsLoading(true)
-      const response = await apiClient.get('/bikes')
+      const response = await apiClient.get('/bikes/available')
       setBikes(response.data)
-      setTimeout(() => {
-        setIsLoading(false)
-      }, 10000)
+      setIsLoading(false)
     }
 
     getAllBikes()

@@ -7,6 +7,7 @@ const apiClient = axios.create({
 
 apiClient.interceptors.request.use((request) => {
   if (request.headers) {
+    request.headers.contentType = 'application/json'
     request.headers.Authorization = BOILERPLATE_CANDIDATE_TOKEN
   }
 
