@@ -19,7 +19,7 @@ export const LoadingContainer = styled(Box)(({ theme }) => ({
 
   [theme.breakpoints.up('md')]: {
     padding: '100px 8vw',
-    gridTemplateColumns: '1fr 1fr',
+    gridTemplateColumns: '1fr 1fr 1fr',
   },
 
   [theme.breakpoints.up('xl')]: {

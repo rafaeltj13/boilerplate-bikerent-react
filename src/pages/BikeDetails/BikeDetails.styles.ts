@@ -92,3 +92,10 @@ export const PriceRow = styled(Box)<BoxProps>(() => ({
   justifyContent: 'space-between',
   alignItems: 'center',
 }))
+
+export const ThankYouContainer = styled(Box)<BoxProps>(() => ({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  padding: '42px',
+}))

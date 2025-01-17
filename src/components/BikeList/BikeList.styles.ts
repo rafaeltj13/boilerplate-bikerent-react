@@ -21,11 +21,11 @@ export const ListContainer = styled(Box)<BoxProps>(({ theme }) => ({
   gridTemplateColumns: '1fr',
   gap: 25,
 
-  [theme.breakpoints.up('md')]: {
+  '@media (min-width: 900px)': {
     gridTemplateColumns: '1fr 1fr',
   },
 
-  [theme.breakpoints.up('xl')]: {
+  '@media (min-width: 1400px)': {
     gridTemplateColumns: '1fr 1fr 1fr',
   },
 

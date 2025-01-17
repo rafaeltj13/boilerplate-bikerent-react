@@ -18,6 +18,7 @@ import {
   LikeButton,
   OverviewContainer,
   PriceRow,
+  ThankYouContainer,
 } from './BikeDetails.styles'
 import BikeRentCalendar from 'components/BikeRentCalendar'
 import { DateRange } from 'react-day-picker'
@@ -25,13 +26,16 @@ import { useEffect, useState } from 'react'
 import dayjs from 'dayjs'
 import { BOILERPLATE_USER_ID } from 'config'
 import apiClient from 'services/api'
+import BikePlaceholder from 'assets/bike-placeholder.png'
 
 interface BikeDetailsProps {
   bike?: Bike
   postBikeRental?: ({ dateFrom, dateTo }: { dateFrom: string; dateTo: string }) => void
+  isBikeRented?: boolean
+  error?: string
 }
 
-const BikeDetails = ({ bike, postBikeRental }: BikeDetailsProps) => {
+const BikeDetails = ({ bike, postBikeRental, isBikeRented }: BikeDetailsProps) => {
   const rateByDay = bike?.rate || 0
   const rateByWeek = rateByDay * 7
 
@@ -162,50 +166,74 @@ const BikeDetails = ({ bike, postBikeRental }: BikeDetailsProps) => {
         </DetailsContainer>
 
         <OverviewContainer variant='outlined' data-testid='bike-overview-container'>
-          <BikeRentCalendar onSelectRange={onSelectRange} />
-          <Typography variant='h2' fontSize={16} marginBottom={1.25}>
-            Booking Overview
-          </Typography>
+          {isBikeRented ? (
+            <>
+              <BikeRentCalendar onSelectRange={onSelectRange} />
+              <Typography variant='h2' fontSize={16} marginBottom={1.25}>
+                Booking Overview
+              </Typography>
 
-          <Divider />
+              <Divider />
 
-          <PriceRow marginTop={1.75} data-testid='bike-overview-single-price'>
-            <Box display='flex' alignItems='center'>
-              <Typography marginRight={1}>Subtotal</Typography>
-              <InfoIcon fontSize='small' />
-            </Box>
+              <PriceRow marginTop={1.75} data-testid='bike-overview-single-price'>
+                <Box display='flex' alignItems='center'>
+                  <Typography marginRight={1}>Subtotal</Typography>
+                  <InfoIcon fontSize='small' />
+                </Box>
 
-            <Typography>{subtotal.toFixed(2)} €</Typography>
-          </PriceRow>
+                <Typography>{subtotal.toFixed(2)} €</Typography>
+              </PriceRow>
 
-          <PriceRow marginTop={1.5} data-testid='bike-overview-single-price'>
-            <Box display='flex' alignItems='center'>
-              <Typography marginRight={1}>Service Fee</Typography>
-              <InfoIcon fontSize='small' />
-            </Box>
+              <PriceRow marginTop={1.5} data-testid='bike-overview-single-price'>
+                <Box display='flex' alignItems='center'>
+                  <Typography marginRight={1}>Service Fee</Typography>
+                  <InfoIcon fontSize='small' />
+                </Box>
 
-            <Typography>{servicesFee.toFixed(2)} €</Typography>
-          </PriceRow>
+                <Typography>{servicesFee.toFixed(2)} €</Typography>
+              </PriceRow>
 
-          <PriceRow marginTop={1.75} data-testid='bike-overview-total'>
-            <Typography fontWeight={800} fontSize={16}>
-              Total
-            </Typography>
-            <Typography variant='h2' fontSize={24} letterSpacing={1}>
-              {total.toFixed(2)} €
-            </Typography>
-          </PriceRow>
+              <PriceRow marginTop={1.75} data-testid='bike-overview-total'>
+                <Typography fontWeight={800} fontSize={16}>
+                  Total
+                </Typography>
+                <Typography variant='h2' fontSize={24} letterSpacing={1}>
+                  {total.toFixed(2)} €
+                </Typography>
+              </PriceRow>
 
-          <BookingButton
-            fullWidth
-            disableElevation
-            variant='contained'
-            data-testid='bike-booking-button'
-            onClick={onSubmit}
-            disabled={!!error || !dateFrom}
-          >
-            {error ? error : !dateFrom && !dateTo ? 'Select date and time' : 'Add to booking'}
-          </BookingButton>
+              <BookingButton
+                fullWidth
+                disableElevation
+                variant='contained'
+                data-testid='bike-booking-button'
+                onClick={onSubmit}
+                disabled={!!error || !dateFrom}
+              >
+                {error ? error : !dateFrom && !dateTo ? 'Select date and time' : 'Add to booking'}
+              </BookingButton>
+            </>
+          ) : (
+            <ThankYouContainer>
+              <Typography variant='h2' fontSize={24} marginBottom={4} fontWeight={800}>
+                Thank you!
+              </Typography>
+              <Typography variant='h6' fontSize={16} marginBottom={4} fontWeight={600}>
+                Your bike is booked.
+              </Typography>
+              <img
+                src={bike?.imageUrls[0]}
+                width='185px'
+                height='105px'
+                alt={'bike-rental-card'}
+                placeholder={BikePlaceholder}
+              />
+              <Typography variant='h6' fontSize={18} marginTop={4} fontWeight={700}>
+                {bike?.name}
+              </Typography>
+              <BikeType type={bike?.type} />
+            </ThankYouContainer>
+          )}
         </OverviewContainer>
       </Content>
     </div>

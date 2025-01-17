@@ -14,40 +14,54 @@ const BikeDetailsContainer = () => {
 
   const [currentBikeData, setCurrentBikeData] = useState<Bike>()
 
+  const [isBikeRented, setIsBikeRented] = useState<boolean>(false)
+  const [error, setError] = useState<string>('')
+
   const getBikeRentals = async ({ bike }: { bike: Bike }) => {
     try {
-      const { data } = await apiClient.post('/bikes/return', {
+      await apiClient.post('/bikes/return', {
         userId: parseInt(BOILERPLATE_USER_ID),
         bikeId: bike?.id,
       })
+      setIsBikeRented(true)
     } catch (error) {
-      // console.log(error)
+      setError(error instanceof Error ? error.message : 'Something went wrong')
     }
   }
 
   const postBikeRental = async ({ dateFrom, dateTo }: { dateFrom: string; dateTo: string }) => {
     try {
-      const response = await apiClient.post('/bikes/rent', {
+      await apiClient.post('/bikes/rent', {
         bikeId: currentBikeData?.id,
         userId: parseInt(BOILERPLATE_USER_ID),
         dateTo,
         dateFrom,
       })
     } catch (error) {
-      // console.log(error)
+      setError(error instanceof Error ? error.message : 'Something went wrong')
     }
   }
 
   useEffect(() => {
+    setIsBikeRented(false)
+    setError('')
+
     if (state) {
       const { bike } = state as StateReceived
       setCurrentBikeData(bike)
 
-      // getBikeRentals({ bike })
+      getBikeRentals({ bike })
     }
   }, [state])
 
-  return <BikeDetails bike={currentBikeData} postBikeRental={postBikeRental} />
+  return (
+    <BikeDetails
+      bike={currentBikeData}
+      postBikeRental={postBikeRental}
+      isBikeRented={isBikeRented}
+      error={error}
+    />
+  )
 }
 
 export default BikeDetailsContainer
