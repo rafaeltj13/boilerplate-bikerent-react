@@ -17,8 +17,8 @@ const Home = ({ bikes, appIsNotConfigured, isLoading = false }: HomeProps) => {
       <Header />
       {isLoading ? (
         <LoadingContainer>
-          {Array.from({ length: 10 }).map((_, index) => (
-            <Skeleton key={index} width={400} height={320} variant='rounded' animation='wave' />
+          {Array.from({ length: 12 }).map((_, index) => (
+            <Skeleton key={index} width='100%' height={320} variant='rounded' animation='wave' />
           ))}
         </LoadingContainer>
       ) : (

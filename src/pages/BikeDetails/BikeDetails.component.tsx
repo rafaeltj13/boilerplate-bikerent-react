@@ -166,7 +166,7 @@ const BikeDetails = ({ bike, postBikeRental, isBikeRented }: BikeDetailsProps) =
         </DetailsContainer>
 
         <OverviewContainer variant='outlined' data-testid='bike-overview-container'>
-          {isBikeRented ? (
+          {!isBikeRented ? (
             <>
               <BikeRentCalendar onSelectRange={onSelectRange} />
               <Typography variant='h2' fontSize={16} marginBottom={1.25}>

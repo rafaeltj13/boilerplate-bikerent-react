@@ -23,7 +23,6 @@ const BikeDetailsContainer = () => {
         userId: parseInt(BOILERPLATE_USER_ID),
         bikeId: bike?.id,
       })
-      setIsBikeRented(true)
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Something went wrong')
     }
@@ -37,6 +36,7 @@ const BikeDetailsContainer = () => {
         dateTo,
         dateFrom,
       })
+      setIsBikeRented(true)
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Something went wrong')
     }

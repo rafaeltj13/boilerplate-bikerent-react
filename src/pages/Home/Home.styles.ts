@@ -9,25 +9,26 @@ export const Content = styled(Box)(({ theme }) => ({
   },
 }))
 
-export const LoadingContainer = styled(Box)(({ theme }) => ({
-  padding: '100px 44px',
+export const LoadingContainer = styled(Box)(() => ({
+  padding: '100px 34px',
   position: 'relative',
 
   display: 'grid',
   gridTemplateColumns: '1fr',
   gap: '25px',
 
-  [theme.breakpoints.up('md')]: {
-    padding: '100px 8vw',
-    gridTemplateColumns: '1fr 1fr 1fr',
+  '@media (min-width: 900px)': {
+    gridTemplateColumns: '1fr 1fr',
+    padding: '100px',
   },
 
-  [theme.breakpoints.up('xl')]: {
+  '@media (min-width: 1400px)': {
     gridTemplateColumns: '1fr 1fr 1fr',
-    padding: '100px 4vw',
+    padding: '100px',
   },
 
   '@media (min-width: 1850px)': {
     gridTemplateColumns: '1fr 1fr 1fr 1fr',
+    padding: '100px',
   },
 }))

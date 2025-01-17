@@ -41,6 +41,7 @@ export const Content = styled(Box)<BoxProps>(({ theme }) => ({
   display: 'grid',
   gridTemplateColumns: '2fr 1fr',
   gap: 24,
+  alignItems: 'start',
 
   [theme.breakpoints.down('lg')]: {
     gridTemplateColumns: '1fr',
@@ -75,7 +76,6 @@ export const InfoIcon = styled(InfoOutlined)(({ theme }) => ({
 export const OverviewContainer = styled(Card)<CardProps>(({ theme }) => ({
   borderColor: theme.palette.grey[500],
   padding: '34px 12px',
-  maxHeight: 774,
 }))
 
 export const BookingButton = styled(Button)<ButtonProps>(({ theme }) => ({

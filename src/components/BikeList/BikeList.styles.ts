@@ -16,7 +16,7 @@ export const QuantityContainer = styled(Box)<BoxProps>(({ theme }) => ({
   },
 }))
 
-export const ListContainer = styled(Box)<BoxProps>(({ theme }) => ({
+export const ListContainer = styled(Box)<BoxProps>(() => ({
   display: 'grid',
   gridTemplateColumns: '1fr',
   gap: 25,
