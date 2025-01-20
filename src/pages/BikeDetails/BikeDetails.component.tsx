@@ -5,7 +5,6 @@ import BikeType from 'components/BikeType'
 import BookingAddressMap from 'components/BookingAddressMap'
 import Header from 'components/Header'
 import Bike from 'models/Bike'
-import { getServicesFee } from './BikeDetails.utils'
 import {
   BookingButton,
   BreadcrumbContainer,
@@ -22,69 +21,40 @@ import {
 } from './BikeDetails.styles'
 import BikeRentCalendar from 'components/BikeRentCalendar'
 import { DateRange } from 'react-day-picker'
-import { useEffect, useState } from 'react'
-import dayjs from 'dayjs'
-import { BOILERPLATE_USER_ID } from 'config'
-import apiClient from 'services/api'
 import BikePlaceholder from 'assets/bike-placeholder.png'
 
 interface BikeDetailsProps {
   bike?: Bike
-  postBikeRental?: ({ dateFrom, dateTo }: { dateFrom: string; dateTo: string }) => void
   isBikeRented?: boolean
+  subtotal: number
+  total: number
+  servicesFee: number
+  dateFrom: string
+  dateTo: string
   error?: string
+  postBikeRental?: () => void
+  onSelectRange(dateRange?: DateRange): void
+  checkRentAmount(): void
 }
 
-const BikeDetails = ({ bike, postBikeRental, isBikeRented }: BikeDetailsProps) => {
+const BikeDetails = ({
+  bike,
+  isBikeRented,
+  total,
+  subtotal,
+  servicesFee,
+  error,
+  dateFrom,
+  dateTo,
+  onSelectRange,
+  postBikeRental,
+}: BikeDetailsProps) => {
   const rateByDay = bike?.rate || 0
   const rateByWeek = rateByDay * 7
 
-  const [subtotal, setSubtotal] = useState<number>(rateByDay)
-  const [servicesFee, setServicesFee] = useState<number>(getServicesFee(rateByDay) || 0)
-  const [total, setTotal] = useState<number>(rateByDay + servicesFee)
-
-  const [dateFrom, setDateFrom] = useState<string>('')
-  const [dateTo, setDateTo] = useState<string>('')
-
-  const [error, setError] = useState<string>('')
-
-  const onSelectRange = async (dateRange?: DateRange) => {
-    if (dateRange) {
-      setDateFrom(dayjs(dateRange.from).format('YYYY-MM-DD'))
-      setDateTo(dayjs(dateRange.to).format('YYYY-MM-DD'))
-    } else {
-      setDateFrom('')
-      setDateTo('')
-    }
-  }
-
-  const checkRentAmount = async () => {
-    try {
-      const { data }: { data: { rentAmount: number; fee: number; totalAmount: number } } =
-        await apiClient.post('/bikes/amount', {
-          bikeId: bike?.id,
-          userId: parseInt(BOILERPLATE_USER_ID),
-          dateFrom,
-          dateTo,
-        })
-
-      if (data.fee) setServicesFee(data.fee)
-      if (data.rentAmount) setSubtotal(data.rentAmount)
-      if (data.totalAmount) setTotal(data.totalAmount)
-
-      setError('')
-    } catch {
-      setError('This date period is not available')
-    }
-  }
-
   const onSubmit = () => {
-    postBikeRental?.({ dateFrom, dateTo })
+    postBikeRental?.()
   }
-
-  useEffect(() => {
-    if (dateFrom && dateTo) checkRentAmount()
-  }, [dateFrom, dateTo])
 
   return (
     <div data-testid='bike-details-page'>

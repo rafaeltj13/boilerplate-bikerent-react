@@ -5,11 +5,34 @@ import { SERVICE_FEE_PERCENTAGE } from './BikeDetails.contants'
 import { getServicesFee } from './BikeDetails.utils'
 import BikeDetails from './BikeDetails.component'
 
+jest.mock(
+  'react-day-picker/style.css',
+  () => {
+    return {
+      __esModule: true,
+      default: {},
+    }
+  },
+  { virtual: true },
+)
+
 describe('BikeDetails page', () => {
   beforeEach(() => {
     render(
       <BrowserRouter>
-        <BikeDetails bike={mockedBike} />
+        <BikeDetails
+          bike={mockedBike}
+          isBikeRented={false}
+          total={0}
+          subtotal={0}
+          servicesFee={0}
+          error={''}
+          dateFrom={new Date().toISOString()}
+          dateTo={new Date(new Date().setDate(new Date().getDate() - 1)).toISOString()}
+          onSelectRange={() => ({})}
+          postBikeRental={() => ({})}
+          checkRentAmount={() => ({})}
+        />
       </BrowserRouter>,
     )
   })
